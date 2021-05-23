@@ -211,6 +211,58 @@ namespace ft
 				return (n);
 			};
 
+			node _insert_node(node n, key_type key, mapped_type value, bool end = false)
+			{
+				if (n->end)
+				{
+					if (!n->left)
+					{
+						n->left = create_node(key, value, n, end);
+						return (n->left);
+					}
+					return (_insert_node(n->left, key, value));
+				}
+				if (key < n->pair.first && !end)
+				{
+					if (!n->left)
+					{
+						n->left = create_node(key, value, n, end);
+						return (n->left);
+					}
+					else
+						return (_insert_node(n->left, key, value));
+				}
+				else
+				{
+					if (!n->right)
+					{
+						n->right = create_node(key, value, n, end);
+						return (n->right);
+					}
+					else
+						return(_insert_node(n->right, key, value));
+				}
+			};
+
+			// ATT
+			node _find(node n, key_type key) const
+			{
+				node tmp;
+				if (!n->end && n->pair.first == key && n->parent)
+					return (n);
+				if (n->right)
+				{
+					if ((tmp = _find(n->right, key)))
+						return (tmp);
+				}
+				if (n->left)
+				{
+					if ((tmp = _find(n->left, key)))
+						return (tmp);
+				}
+				return (0);
+			};
+
 			void init_tree()
 			{
 				this->root = _create_node(0, false);
@@ -323,39 +375,55 @@ namespace ft
 			void pop_back() {
 				if (this->container_size)
 					this->container_size--;
-			}
+			}*/
 
-			iterator insert (iterator position, const value_type& val) {
-				size_type i = 0;
-				iterator it = begin();
-				while (it + i != position && i < this->container_size)
-					i++;
-				if (this->container_size + 1 > this->_capacity)
-					this->reserve(this->_capacity ? this->_capacity * 2 : 1);
-				this->container_size++;
-				size_type j = this->container_size - 1;
-				while (j > i)
-				{
-					this->container[j] = this->container[j - 1];
-					j--;
-				}
-				this->container[i] = val;
-				return (iterator(&this->container[i]));
+			std::pair<iterator,bool> insert (const value_type& val);
+			{
+				iterator tmp;
+				if ((tmp = this->find(val.first)) != this->end())
+					return (std::make_pair(tmp, false));
+				max_size++;
+				return (std::make_pair(iterator(_insert_node(_root, val.first, val.second)), true));
 			};
-    		void insert (iterator position, size_type n, const value_type& val) {
-				while (n--)
-					position = this->insert(position, val);
+			iterator insert (iterator position, const value_type& val);
+			{
+				iterator tmp;
+				if ((tmp = this->find(val.first)) != this->end())
+					return (tmp);
+				max_size++;
+				return (iterator(_insert_node(position.getNode(), val.first, val.second)));
 			};
 			template <class InputIterator>
-    		void insert (iterator position, InputIterator first, InputIterator last) {
+			void insert (InputIterator first, InputIterator last);
+			{
 				while (first != last)
 				{
-					position = this->insert(position, *first) + 1;
+					this->insert(*first);
 					first++;
 				}
 			};
 
-			iterator erase (iterator position) {
+			// ATT
+			iterator find(const key_type &value)
+			{
+				if (empty())
+					return (end());
+				node tmp = _find(_root, value);
+				if (tmp)
+					return (iterator(tmp));
+				return (end());
+			};
+			const_iterator find(const key_type &value) const
+			{
+				if (empty())
+					return (end());
+				node tmp = _find(_root, value);
+				if (tmp)
+					return (const_iterator(tmp));
+				return (end());
+			};
+
+			/*iterator erase (iterator position) {
 				iterator p = position;
 				while (p + 1 != this->end())
 				{
