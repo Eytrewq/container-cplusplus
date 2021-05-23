@@ -1,0 +1,4 @@
+./base/stack/top/patched.cpp:3:10: fatal error: 'stack.hpp' file not found
+#include "stack.hpp" // ft::stack
+         ^~~~~~~~~~~
+1 error generated.

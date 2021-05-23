@@ -1,0 +1,4 @@
+./base/queue/empty/patched.cpp:3:10: fatal error: 'queue.hpp' file not found
+#include "queue.hpp" // ft::queue
+         ^~~~~~~~~~~
+1 error generated.
