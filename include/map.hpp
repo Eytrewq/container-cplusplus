@@ -6,7 +6,7 @@
 /*   By: ebiscara <ebiscara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 20:04:43 by ebiscara          #+#    #+#             */
-/*   Updated: 2021/05/22 11:31:32 by ebiscara         ###   ########.fr       */
+/*   Updated: 2021/05/23 18:13:54 by ebiscara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ namespace ft
 		bool end;
 	};
 
-	template < class T >
+	template < class Key, class T >
 	class MapIterator: public std::iterator<std::random_access_iterator_tag, T>
 	{
 		public:
@@ -43,7 +43,7 @@ namespace ft
 			m_node n;
 		public:
 			MapIterator() {};
-			explicit MapIterator(_node _n): n(_n) {};
+			explicit MapIterator(m_node _n): n(_n) {};
 			MapIterator(const MapIterator &other) { *this = other; };
 			virtual ~MapIterator() {};
 
@@ -93,7 +93,7 @@ namespace ft
 				return (tmp);
 			};
 
-			_node getNode() { return (n); };
+			m_node getNode() { return (n); };
 	};
 
 	template<class MapIterator>
@@ -110,7 +110,7 @@ namespace ft
 			m_node n;
 		public:
 			map_reverse_iterator() {};
-			explicit map_reverse_iterator(_node _n): n(_n) {};
+			explicit map_reverse_iterator(m_node _n): n(_n) {};
 			map_reverse_iterator(const map_reverse_iterator &other) { *this = other; };
 			virtual ~map_reverse_iterator() {};
 
@@ -160,7 +160,7 @@ namespace ft
 				return (tmp);
 			};
 
-			_node getNode() { return (n); };
+			m_node getNode() { return (n); };
 	};
 
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<std::pair<const Key,T> > >
@@ -174,8 +174,8 @@ namespace ft
 			typedef const value_type& const_reference;
 			typedef value_type* pointer;
 			typedef const value_type* const_pointer;
-			typedef ft::MapIterator<value_type> iterator;
-			typedef ft::MapIterator<const value_type> const_iterator;
+			typedef ft::MapIterator<Key, T> iterator;
+			typedef ft::MapIterator<const Key, T> const_iterator;
 			typedef ft::map_reverse_iterator<iterator> reverse_iterator;
 			typedef ft::map_reverse_iterator<const_iterator> const_reverse_iterator;
 			typedef std::ptrdiff_t difference_type;
@@ -184,8 +184,8 @@ namespace ft
 			typedef Compare key_compare;
 			//typedef value_compare; ??
 		private:
-			typedef BTSNode<key_type, mapped_type>* _node;
-			typedef BTSNode<const key_type, const mapped_type>* const_node;
+			typedef BSTNode<key_type, mapped_type>* _node;
+			typedef BSTNode<const key_type, const mapped_type>* const_node;
 
 			_node root;
 			size_type map_size;
@@ -211,7 +211,7 @@ namespace ft
 				return (n);
 			};
 
-			node _insert_node(node n, key_type key, mapped_type value, bool end = false)
+			_node _insert_node(_node n, key_type key, mapped_type value, bool end = false)
 			{
 				if (n->end)
 				{
@@ -245,9 +245,9 @@ namespace ft
 			};
 
 			// ATT
-			node _find(node n, key_type key) const
+			_node _find(_node n, key_type key) const
 			{
-				node tmp;
+				_node tmp;
 				if (!n->end && n->pair.first == key && n->parent)
 					return (n);
 				if (n->right)
@@ -265,8 +265,8 @@ namespace ft
 
 			void init_tree()
 			{
-				this->root = _create_node(0, false);
-				this->root->right = _create_node(root, true); //??
+				this->root = create_node(0, false);
+				this->root->right = create_node(root, true); //??
 				this->map_size = 0;
 			}
 		public:
@@ -276,7 +276,7 @@ namespace ft
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last,
 			const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): alloc(alloc), comp(comp)
-			{ this->init_tree(); this->insert(comp, first, last) };
+			{ this->init_tree(); this->insert(comp, first, last); };
 
 			map (const map& x) { this->init_tree(); *this = x; };
 			~map() {
@@ -284,7 +284,7 @@ namespace ft
 
 			map &operator=(const map& x) {
 				this->clear();
-				this->insert(other.begin(), other.end());
+				this->insert(x.begin(), x.end());
 				return (*this);
 			};
 
@@ -341,7 +341,7 @@ namespace ft
 			// CAPACITY
 
 			size_type size() const { return (this->map_size); };
-			size_type max_size() const { return (std::numeric_limits<size_type>::max() / sizeof(map<value_type>)); }; // ??
+			size_type max_size() const { return (std::numeric_limits<size_type>::max() / sizeof(map<key_type, mapped_type>)); }; // ??
 
 			bool empty() const {
 				if (!this->map_size)
@@ -351,8 +351,8 @@ namespace ft
 
 			// ELEMENT
 			
-			reference operator[] (size_type n) { return (*((this->insert(make_pair(k,mapped_type()))).first)).second; };
-			const_reference operator[] (size_type n) const { return (*((this->insert(make_pair(k,mapped_type()))).first)).second; };
+			//reference operator[] (size_type n) { return (*((this->insert(make_pair(k,mapped_type()))).first)).second; };
+			//const_reference operator[] (size_type n) const { return (*((this->insert(make_pair(k,mapped_type()))).first)).second; };
 
 			// MODIFIERS
 
@@ -377,24 +377,24 @@ namespace ft
 					this->container_size--;
 			}*/
 
-			std::pair<iterator,bool> insert (const value_type& val);
+			std::pair<iterator,bool> insert (const value_type& val)
 			{
 				iterator tmp;
 				if ((tmp = this->find(val.first)) != this->end())
 					return (std::make_pair(tmp, false));
-				max_size++;
-				return (std::make_pair(iterator(_insert_node(_root, val.first, val.second)), true));
+				this->map_size++;
+				return (std::make_pair(iterator(_insert_node(root, val.first, val.second)), true));
 			};
-			iterator insert (iterator position, const value_type& val);
+			iterator insert (iterator position, const value_type& val)
 			{
 				iterator tmp;
 				if ((tmp = this->find(val.first)) != this->end())
 					return (tmp);
-				max_size++;
+				this->map_size++;
 				return (iterator(_insert_node(position.getNode(), val.first, val.second)));
 			};
 			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last);
+			void insert (InputIterator first, InputIterator last)
 			{
 				while (first != last)
 				{
@@ -408,7 +408,7 @@ namespace ft
 			{
 				if (empty())
 					return (end());
-				node tmp = _find(_root, value);
+				_node tmp = _find(root, value);
 				if (tmp)
 					return (iterator(tmp));
 				return (end());
@@ -417,7 +417,7 @@ namespace ft
 			{
 				if (empty())
 					return (end());
-				node tmp = _find(_root, value);
+				_node tmp = _find(root, value);
 				if (tmp)
 					return (const_iterator(tmp));
 				return (end());
