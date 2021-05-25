@@ -175,7 +175,7 @@ namespace ft
 			typedef value_type* pointer;
 			typedef const value_type* const_pointer;
 			typedef ft::MapIterator<Key, T> iterator;
-			typedef ft::MapIterator<const Key, T> const_iterator;
+			typedef ft::MapIterator<const Key, const T> const_iterator; //??
 			typedef ft::map_reverse_iterator<iterator> reverse_iterator;
 			typedef ft::map_reverse_iterator<const_iterator> const_reverse_iterator;
 			typedef std::ptrdiff_t difference_type;
@@ -192,9 +192,9 @@ namespace ft
 			allocator_type alloc;
 			key_compare comp;
 
-			_node create_node(key_type key, mapped_type m, _node parent, bool end) {
+			_node create_node(key_type key, mapped_type val, _node parent, bool end) {
 				_node n = new BSTNode<key_type, mapped_type>();
-				n->data = std::make_pair(key, m);
+				n->data = std::make_pair(key, val);
 				n->left = 0;
 				n->right = 0;
 				n->parent = parent;
@@ -211,56 +211,56 @@ namespace ft
 				return (n);
 			};
 
-			_node _insert_node(_node n, key_type key, mapped_type value, bool end = false)
+			_node _insert_node(_node n, key_type key, mapped_type val, bool end = false)
 			{
-				if (n->end)
+				while (n->end || (key < n->data.first && !end))
 				{
 					if (!n->left)
 					{
-						n->left = create_node(key, value, n, end);
+						n->left = create_node(key, val, n, end);
 						return (n->left);
 					}
-					return (_insert_node(n->left, key, value));
+					n = n->left;
 				}
-				if (key < n->pair.first && !end)
-				{
-					if (!n->left)
-					{
-						n->left = create_node(key, value, n, end);
-						return (n->left);
-					}
-					else
-						return (_insert_node(n->left, key, value));
-				}
-				else
+				while (key >= n->data.first || end)
 				{
 					if (!n->right)
 					{
-						n->right = create_node(key, value, n, end);
+						n->right = create_node(key, val, n, end);
 						return (n->right);
 					}
-					else
-						return(_insert_node(n->right, key, value));
+					n = n->right;
 				}
 			};
 
 			// ATT
 			_node _find(_node n, key_type key) const
 			{
-				_node tmp;
-				if (!n->end && n->pair.first == key && n->parent)
+				_node tmp = n;
+				if (!n->end && n->data.first == key && n->parent)
 					return (n);
-				if (n->right)
+				while (tmp->right)
 				{
-					if ((tmp = _find(n->right, key)))
+					if (!tmp->end && tmp->data.first == key && tmp->parent)
 						return (tmp);
+					n = n->right;
 				}
-				if (n->left)
+				while (n->left)
 				{
-					if ((tmp = _find(n->left, key)))
-						return (tmp);
+					if (!n->end && n->data.first == key && n->parent)
+						return (n);
+					n = n->left;
 				}
 				return (0);
+			};
+
+			void free_tree(_node n)
+			{
+				if (n->right)
+					free_tree(n->right)
+				if (n->left)
+					free_tree(n->left)
+				delete n;
 			};
 
 			void init_tree()
@@ -268,7 +268,7 @@ namespace ft
 				this->root = create_node(0, false);
 				this->root->right = create_node(root, true); //??
 				this->map_size = 0;
-			}
+			};
 		public:
 			explicit map (const key_compare& comp = key_compare(),
 			const allocator_type& alloc = allocator_type()): alloc(alloc), comp(comp) { this->init_tree(); };
@@ -280,6 +280,7 @@ namespace ft
 
 			map (const map& x) { this->init_tree(); *this = x; };
 			~map() {
+				free_tree(root);
 			};
 
 			map &operator=(const map& x) {
@@ -350,9 +351,12 @@ namespace ft
 			};
 
 			// ELEMENT
-			
-			//reference operator[] (size_type n) { return (*((this->insert(make_pair(k,mapped_type()))).first)).second; };
-			//const_reference operator[] (size_type n) const { return (*((this->insert(make_pair(k,mapped_type()))).first)).second; };
+			mapped_type& operator[] (const key_type& k) {
+				iterator tmp = find(k);
+				if (tmp != this->end())
+					return (tmp->second);
+				return (this->insert(std::make_pair(k,mapped_type())).first->second);
+			};
 
 			// MODIFIERS
 
@@ -404,23 +408,23 @@ namespace ft
 			};
 
 			// ATT
-			iterator find(const key_type &value)
+			iterator find(const key_type &val)
 			{
-				if (empty())
-					return (end());
-				_node tmp = _find(root, value);
+				if (this->empty())
+					return (this->end());
+				_node tmp = this->_find(root, val);
 				if (tmp)
 					return (iterator(tmp));
-				return (end());
+				return (this->end());
 			};
-			const_iterator find(const key_type &value) const
+			const_iterator find(const key_type &val) const
 			{
-				if (empty())
-					return (end());
-				_node tmp = _find(root, value);
+				if (this->empty())
+					return (this->end());
+				_node tmp = this->_find(root, val);
 				if (tmp)
 					return (const_iterator(tmp));
-				return (end());
+				return (this->end());
 			};
 
 			/*iterator erase (iterator position) {
