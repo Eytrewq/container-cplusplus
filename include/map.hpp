@@ -474,11 +474,22 @@ namespace ft
 			};
 			size_type erase (const key_type& k)
 			{
-
+				iterator it = this->begin();
+				size_type count = 0;
+				while (it != this->end()) {
+					if (it->first == k) {
+						count++;
+						erase(it);
+					}
+					it++;
+				}
+				return (count);
 			};
      		void erase (iterator first, iterator last)
 			{
-
+				while (first != last)
+					erase(first++);
+				return (iterator(first));
 			};
 
 			void swap (map& x)
