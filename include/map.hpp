@@ -6,7 +6,7 @@
 /*   By: ebiscara <ebiscara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 20:04:43 by ebiscara          #+#    #+#             */
-/*   Updated: 2021/05/25 13:53:02 by ebiscara         ###   ########.fr       */
+/*   Updated: 2021/05/26 10:47:01 by ebiscara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ namespace ft
 			//typedef value_compare; ??
 		private:
 			typedef BSTNode<key_type, mapped_type>* _node;
-			typedef BSTNode<const key_type, const mapped_type>* const_node;
+			typedef BSTNode<key_type, mapped_type>* const_node;
 
 			_node root;
 			size_type map_size;
@@ -302,7 +302,7 @@ namespace ft
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last,
 			const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): alloc(alloc), comp(comp)
-			{ this->init_tree(); this->insert(comp, first, last); };
+			{ this->init_tree(); this->insert(first, last); };
 
 			map (const map& x) { this->init_tree(); *this = x; };
 			~map() {
@@ -386,27 +386,6 @@ namespace ft
 
 			// MODIFIERS
 
-			/*template <class InputIterator>
-			void assign (InputIterator first, InputIterator last) {
-				this->clear();
-				this->insert(this->begin(), first, last);
-			};
-			void assign (size_type n, const value_type& val) {
-				this->clear();
-				this->insert(this->begin(), n, val);
-			};
-
-			void push_back (const value_type& val) {
-				if (this->container_size + 1 > this->_capacity)
-					this->reserve(this->_capacity ? this->_capacity * 2 : 1);
-				this->container[this->container_size++] = val;
-			};
-
-			void pop_back() {
-				if (this->container_size)
-					this->container_size--;
-			}*/
-
 			std::pair<iterator,bool> insert (const value_type& val)
 			{
 				iterator tmp;
@@ -433,6 +412,11 @@ namespace ft
 				}
 			};
 
+			void clear()
+			{
+				this->free_tree(this->root);
+			};
+
 			// ATT
 			iterator find(const key_type &val)
 			{
@@ -452,33 +436,9 @@ namespace ft
 					return (const_iterator(tmp));
 				return (this->end());
 			};
-
-			/*iterator erase (iterator position) {
-				iterator p = position;
-				while (p + 1 != this->end())
-				{
-					*p = *(p + 1);
-					p++;
-				}
-				this->container_size--;
-				return (iterator(position));
-			};
-			iterator erase (iterator first, iterator last) {
-				while (first != last)
-					erase(--last);
-				return (iterator(first));
-			};
-
-			void swap (vector& x) {
-				std::swap(this->container, x.container);
-				std::swap(this->container_size, x.container_size);
-				std::swap(this->_capacity, x._capacity);
-			};
-
-			void clear() { this->erase(this->begin(), this->end()); };
 	};
 
-	template <>
+	/*template <>
 	template <>
 	void ft::vector<int>::insert(iterator position, int s, int v)
 	{
@@ -520,7 +480,6 @@ namespace ft
 	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) {
 		return (!operator<(lhs, rhs));
 	};*/
-	};
 }
 
 #endif
