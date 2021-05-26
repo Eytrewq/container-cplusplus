@@ -1,6 +1,6 @@
 // constructing stacks
 #include <iostream> // std::cout
-#include "stack.hpp" // ft::stack
+#include "../../../include/stack.hpp"
 #include <vector> // std::vector
 #include <deque> // std::deque
 

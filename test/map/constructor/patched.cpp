@@ -1,6 +1,6 @@
 // constructing maps
 #include <iostream>
-#include "map.hpp"
+#include "../../../include/map.hpp"
 
 bool fncomp (char lhs, char rhs) {return lhs>rhs;}
 

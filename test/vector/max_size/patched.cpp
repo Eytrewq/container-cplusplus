@@ -1,6 +1,6 @@
 // comparing size, capacity and max_size
 #include <iostream>
-#include "vector.hpp"
+#include "../../../include/vector.hpp"
 
 int main ()
 {

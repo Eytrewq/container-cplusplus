@@ -314,6 +314,12 @@ namespace ft
 			void clear() { this->erase(this->begin(), this->end()); };
 	};
 
+	template <class T, class Alloc>
+	void swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
+	{
+		x.swap(y);
+	};
+
 	template <>
 	template <>
 	void ft::vector<int>::insert(iterator position, int s, int v)

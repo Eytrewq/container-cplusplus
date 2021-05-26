@@ -440,6 +440,12 @@ namespace ft
 			};
 	};
 
+	template <class T, class Alloc>
+	void swap(list<T, Alloc> &x, list<T, Alloc> &y)
+	{
+		x.swap(y);
+	};
+
 	template <>
 	template <>
 	void ft::list<int>::insert(iterator position, int s, int v)

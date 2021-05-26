@@ -1,6 +1,6 @@
 // list::sort
 #include <iostream>
-#include "list.hpp"
+#include "../../../include/list.hpp"
 #include <string>
 #include <cctype>
 

@@ -1,6 +1,6 @@
 // inserting into a list
 #include <iostream>
-#include "list.hpp"
+#include "../../../include/list.hpp"
 #include <vector>
 
 int main ()

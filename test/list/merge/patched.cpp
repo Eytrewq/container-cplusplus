@@ -1,6 +1,6 @@
 // list::merge
 #include <iostream>
-#include "list.hpp"
+#include "../../../include/list.hpp"
 
 // compare only integral part:
 bool mycomparison (double first, double second)

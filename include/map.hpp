@@ -29,6 +29,14 @@ namespace ft
 		bool end;
 	};
 
+	template < class T > // ??
+	void swap(T &a, T &b)
+	{
+		T tmp = a;
+		a = b;
+		b = tmp;
+	};
+
 	template < class Key, class T >
 	class MapIterator: public std::iterator<std::bidirectional_iterator_tag, T>
 	{
@@ -228,6 +236,7 @@ namespace ft
 				return (n);
 			};
 
+			// MODIF
 			_node _insert_node(_node n, key_type key, mapped_type value, bool end = false)
 			{
 				if (n->end)
@@ -261,7 +270,6 @@ namespace ft
 				}
 			};
 
-			// ATT
 			_node _find(_node n, key_type key) const
 			{
 				_node tmp;
@@ -276,6 +284,54 @@ namespace ft
 				{
 					if ((tmp = _find(n->left, key)))
 						return (tmp);
+				}
+				return (0);
+			};
+
+			_node erase_node(_node n)
+			{
+
+			};
+
+			// !!
+			_node __insert_node(_node n, key_type key, mapped_type val, bool end = false)
+			{
+				while (n->end || (key < n->data.first && !end))
+				{
+					if (!n->left)
+					{
+						n->left = create_node(key, val, n, end);
+						return (n->left);
+					}
+					n = n->left;
+				}
+				while (key >= n->data.first || end)
+				{
+					if (!n->right)
+					{
+						n->right = create_node(key, val, n, end);
+						return (n->right);
+					}
+					n = n->right;
+				}
+			};
+
+			_node __find(_node n, key_type key) const
+			{
+				_node tmp = n;
+				if (!n->end && n->data.first == key && n->parent)
+					return (n);
+				while (tmp->right)
+				{
+					if (!tmp->end && tmp->data.first == key && tmp->parent)
+						return (tmp);
+					n = n->right;
+				}
+				while (n->left)
+				{
+					if (!n->end && n->data.first == key && n->parent)
+						return (n);
+					n = n->left;
 				}
 				return (0);
 			};
@@ -403,7 +459,7 @@ namespace ft
 				return (iterator(_insert_node(position.getNode(), val.first, val.second)));
 			};
 			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last)
+  			void insert (InputIterator first, InputIterator last
 			{
 				while (first != last)
 				{
@@ -412,30 +468,71 @@ namespace ft
 				}
 			};
 
+			void erase (iterator position)
+			{
+
+			};
+			size_type erase (const key_type& k)
+			{
+
+			};
+     		void erase (iterator first, iterator last)
+			{
+
+			};
+
+			void swap (map& x)
+			{
+				ft::swap(root, x.root);
+				ft::swap(map_size, x.map_size);
+			}
+
 			void clear()
 			{
 				this->free_tree(this->root);
 			};
 
-			// ATT
-			iterator find(const key_type &val)
+			iterator find (const key_type& k)
 			{
 				if (this->empty())
 					return (this->end());
-				_node tmp = this->_find(root, val);
+				_node tmp = this->_find(this->root, k);
 				if (tmp)
 					return (iterator(tmp));
 				return (this->end());
 			};
-			const_iterator find(const key_type &val) const
+
+			const_iterator find (const key_type& k) const
 			{
 				if (this->empty())
 					return (this->end());
-				_node tmp = this->_find(root, val);
+				_node tmp = this->_find(this->root, k);
 				if (tmp)
 					return (const_iterator(tmp));
 				return (this->end());
 			};
+
+			size_type count (const key_type& k) const
+			{
+				iterator it = this->begin();
+				size_type count = 0;
+				while (it != this->end()) {
+					if (it->first == k)
+						count++;
+					it++;
+				}
+				return (count);
+			};
+
+			/*iterator lower_bound (const key_type& k)
+			{
+
+			};
+
+			const_iterator lower_bound (const key_type& k) const
+			{
+
+			};*/
 	};
 
 	/*template <>

@@ -1,6 +1,6 @@
 // stack::top
 #include <iostream> // std::cout
-#include "stack.hpp" // ft::stack
+#include "../../../include/stack.hpp"
 
 int main ()
 {

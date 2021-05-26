@@ -1,6 +1,6 @@
 // list::assign
 #include <iostream>
-#include "list.hpp"
+#include "../../../include/list.hpp"
 
 int main ()
 {

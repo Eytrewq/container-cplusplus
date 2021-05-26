@@ -1,6 +1,6 @@
 // swap maps
 #include <iostream>
-#include "map.hpp"
+#include "../../../include/map.hpp"
 
 int main ()
 {

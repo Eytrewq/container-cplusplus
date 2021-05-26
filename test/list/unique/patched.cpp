@@ -1,7 +1,7 @@
 // list::unique
 #include <iostream>
 #include <cmath>
-#include "list.hpp"
+#include "../../../include/list.hpp"
 
 // a binary predicate implemented as a function:
 bool same_integral_part (double first, double second)
