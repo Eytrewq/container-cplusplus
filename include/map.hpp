@@ -6,7 +6,7 @@
 /*   By: ebiscara <ebiscara@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 20:04:43 by ebiscara          #+#    #+#             */
-/*   Updated: 2021/05/26 10:47:01 by ebiscara         ###   ########.fr       */
+/*   Updated: 2021/05/27 14:19:39 by ebiscara         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,9 +302,9 @@ namespace ft
 				return (0);
 			};
 
-			_node erase_node(_node n)
+			void erase_node(_node n)
 			{
-				node parent = n->parent;
+				_node parent = n->parent;
 				if (!n->left && !n->right)
 				{
 					if (parent->right == n)
@@ -334,20 +334,20 @@ namespace ft
 					delete n;
 					return ;
 				}
-				node next = (++iterator(n)).node();
+				_node next = (++iterator(n)).getNode();
 				if (!next)
-					next = (--iterator(n)).node();
-				ft::swap(next->pair, n->pair);
-				_delete_node(next);
+					next = (--iterator(n)).getNode();
+				ft::swap(next->data, n->data);
+				erase_node(next);
 			};
 
-			void print_tree(node n)
+			void print_tree(_node n)
 			{
 				if (!n)
 					return;
 				print_tree(n->left);
 				if (n->parent && !n->end)
-					std::cout << n->pair.first << "->" << n->pair.second << std::endl;
+					std::cout << n->data.first << "->" << n->data.second << std::endl;
 				print_tree(n->right);
 			};
 
@@ -368,11 +368,11 @@ namespace ft
 			};
 		public:
 			explicit map (const key_compare& comp = key_compare(),
-			const allocator_type& alloc = allocator_type()): alloc(alloc), comp(comp) { this->init_tree(); };
+			const allocator_type& alloc = allocator_type()): alloc(alloc), k_comp(comp) { this->init_tree(); };
 
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last,
-			const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): alloc(alloc), comp(comp)
+			const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): alloc(alloc), k_comp(comp)
 			{ this->init_tree(); this->insert(first, last); };
 
 			map (const map& x) { this->init_tree(); *this = x; };
@@ -474,7 +474,7 @@ namespace ft
 				return (iterator(_insert_node(position.getNode(), val.first, val.second)));
 			};
 			template <class InputIterator>
-  			void insert (InputIterator first, InputIterator last
+  			void insert (InputIterator first, InputIterator last)
 			{
 				while (first != last)
 				{
@@ -505,7 +505,6 @@ namespace ft
 			{
 				while (first != last)
 					erase(first++);
-				return (iterator(first));
 			};
 
 			void swap (map& x)
