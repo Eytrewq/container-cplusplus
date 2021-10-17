@@ -29,7 +29,7 @@ namespace ft
 		bool end;
 	};
 
-	template < class T > // ??
+	template < class T >
 	void swap(T &a, T &b)
 	{
 		T tmp = a;
@@ -97,8 +97,8 @@ namespace ft
 			value_type &operator*() { return (this->n->data); };
 			value_type *operator->() { return (&this->n->data); };
 
-			//value_type &operator*() const { return (this->n->data); }; // Const
-			//value_type *operator->() const { return (&this->n->data); };
+			value_type &operator*() const { return (this->n->data); };
+			value_type *operator->() const { return (&this->n->data); };
 
 			MapIterator operator++(int) { MapIterator tmp(*this); this->operator++(); return (tmp); };
 			MapIterator &operator++() {
@@ -174,6 +174,9 @@ namespace ft
 			value_type &operator*() { return (this->n->data); };
 			value_type *operator->() { return (&this->n->data); };
 
+			value_type &operator*() const { return (this->n->data); };
+			value_type *operator->() const { return (&this->n->data); };
+
 			map_reverse_iterator operator++(int) { map_reverse_iterator tmp(*this); this->operator++(); return (tmp); }; // ?
 			map_reverse_iterator &operator++() {
 				this->n = this->n_next(this->n);
@@ -212,14 +215,14 @@ namespace ft
 				friend class map;
 				protected:
 					Compare comp;
-					value_compare (Compare c) : comp(c) {}
+					value_compare (Compare c) : key_compare(c) {}
 				public:
 					typedef bool result_type;
 					typedef value_type first_argument_type;
 					typedef value_type second_argument_type;
 					bool operator() (const value_type& x, const value_type& y) const
 					{
-						return comp(x.first, y.first);
+						return key_compare(x.first, y.first);
 					};
 			};
 		private:
@@ -251,8 +254,9 @@ namespace ft
 			};
 
 			// ??
-			_node _insert_node(_node n, key_type key, mapped_type value, bool end = false)
+			_node _insert_node(_node n, key_type key, mapped_type value)
 			{
+				end = false;
 				if (n->end)
 				{
 					if (!n->left)
