@@ -1,4 +1,0 @@
-./base/map/key_comp/patched.cpp:3:10: fatal error: 'map.hpp' file not found
-#include "map.hpp"
-         ^~~~~~~~~
-1 error generated.
